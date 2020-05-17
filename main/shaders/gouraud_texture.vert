@@ -33,8 +33,8 @@ void main() {
         vec3 reflected_light_direction = vec3(2.0, 2.0, 2.0) * (normalize(vertex_normal) * light_direction) * (normalize(vertex_normal) - light_direction);
 
         ambient = light_ambient; 
-        diffuse = light_color[i] * max(dot(normalize(vertex_normal), light_direction), 0.0);
-        specular = light_color[i] * pow(max(dot(normalize(camera_position - world_space), normalize(reflected_light_direction)), 0.0), material_shininess);
+        diffuse += light_color[i] * max(dot(normalize(vertex_normal), light_direction), 0.0);
+        specular += light_color[i] * pow(max(dot(normalize(camera_position - world_space), normalize(reflected_light_direction)), 0.0), material_shininess);
     }
 
     ambient = clamp(ambient, 0.0, 1.0);
