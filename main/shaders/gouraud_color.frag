@@ -16,5 +16,5 @@ void main() {
     vec3 d = material_color * diffuse;
     vec3 s = material_specular * specular;
 
-    FragColor = vec4(a + d + s, 1.0);// + d + s, 1.0);
+    FragColor = vec4(a + d + s, 1.0);
 }

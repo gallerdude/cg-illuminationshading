@@ -37,7 +37,7 @@
                             rotate_z: 0
                         },
                         {
-                            type: 'sphere',
+                            type: 'cube',
                             shader: 'color',
                             material: {
                                 color: glMatrix.vec3.fromValues(0.1, 0.4, 0.9),  // red, green, blue
@@ -134,7 +134,7 @@
                                                           new_scene.light.point_lights[i].color[2]);
                     scene.light.point_lights.push(l);
                 }
-
+                console.log(scene)
                 glapp.UpdateScene(scene);
             };
             reader.readAsText(scene_file.files[0], 'UTF-8');
