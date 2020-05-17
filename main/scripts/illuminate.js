@@ -77,20 +77,35 @@ class GlApp {
     }
 
     InitializeTexture(image_url) {
-         let texture = this.gl.createTexture();
+        let texture = this.gl.createTexture();
+        this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR_MIPMAP_NEAREST);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.REPEAT);
+        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, new Uint8Array([255,255,255,255]));
+        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 
-         let image = new Image();
-         image.crossOrigin = 'anonymous';
-         image.addEventListener('load', (event) => {
-             this.UpdateTexture(texture, image);
-         }, false);
-         image.src = image_url;
- 
-         return texture;
+        // download the actual image
+        let image = new Image();
+        image.crossOrigin = 'anonymous';
+        image.addEventListener('load', (event) => {
+            // once image is downloaded, update the texture image
+            this.UpdateTexture(texture, image);
+        }, false);
+        image.src = image_url;
+
+        return texture;
     }
 
     UpdateTexture(texture, image_element) {
+        this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image_element);
+        this.gl.generateMipmap(this.gl.TEXTURE_2D);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+        this.Render();
     }
+
 
     Render() {
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
@@ -98,6 +113,7 @@ class GlApp {
             let selected_shader = null;
             if (scene.models[i].shader === 'color' && this.algorithm === 'gouraud') selected_shader = 'gouraud_color';
             else if (scene.models[i].shader === 'color' && this.algorithm === 'phong') selected_shader = 'phong_color';
+            else if (scene.models[i].shader === 'texture' && this.algorithm === 'gouraud') selected_shader = 'gouraud_texture';
             else selected_shader = 'gouraud_color';
 
             this.gl.useProgram(this.shader[selected_shader].program);
